@@ -8,11 +8,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.app.model.request.UserDetailsRequestModel;
 import com.example.app.model.response.UserRest;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/users")
@@ -42,10 +46,24 @@ public class UserController {
 	}
 
 	
-	@PostMapping
-	public String createUser(){
-		return "create user was called";
+	@PostMapping(consumes =  { 
+			MediaType.APPLICATION_XML_VALUE,
+			MediaType.APPLICATION_JSON_VALUE
+			}, 
+			produces =  { 
+					MediaType.APPLICATION_XML_VALUE,
+					MediaType.APPLICATION_JSON_VALUE
+					}  )
+	public ResponseEntity<UserRest> createUser(@Valid @RequestBody UserDetailsRequestModel userDetails)
+	{
+		UserRest returnValue = new UserRest();
+		returnValue.setEmail(userDetails.getEmail());
+		returnValue.setFirstName(userDetails.getFirstName());
+		returnValue.setLastName(userDetails.getLastName());
+		
+		return new ResponseEntity<UserRest>(returnValue, HttpStatus.OK);
 	}
+
 	
 	@PutMapping
 	public String updateUser(){
