@@ -1,9 +1,8 @@
 package com.example.app.controller;
 
-import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +20,7 @@ import com.example.app.exceptions.UserServiceException;
 import com.example.app.model.request.UpdateUserDetailsRequestModel;
 import com.example.app.model.request.UserDetailsRequestModel;
 import com.example.app.model.response.UserRest;
+import com.example.app.userservice.UserService;
 
 import jakarta.validation.Valid;
 
@@ -29,6 +29,9 @@ import jakarta.validation.Valid;
 public class UserController {
 	
 	Map<String, UserRest> users;
+	
+	@Autowired
+	UserService userService;
 
 	@GetMapping
 	public String getUser(@RequestParam(value="page", defaultValue="1") int page, 
@@ -55,9 +58,7 @@ public class UserController {
 			return new ResponseEntity<>( HttpStatus.NO_CONTENT);
 		}
 		
-	
 	}
-
 	
 	@PostMapping(consumes =  { 
 			MediaType.APPLICATION_XML_VALUE,
@@ -68,21 +69,12 @@ public class UserController {
 					MediaType.APPLICATION_JSON_VALUE
 					}  )
 	public ResponseEntity<UserRest> createUser(@Valid @RequestBody UserDetailsRequestModel userDetails){
-		UserRest returnValue = new UserRest();
-		returnValue.setEmail(userDetails.getEmail());
-		returnValue.setFirstName(userDetails.getFirstName());
-		returnValue.setLastName(userDetails.getLastName());
 		
-		String userId = UUID.randomUUID().toString();
-		returnValue.setUserId(userId);
-		
-		if(users==null) users = new HashMap<>();
-		users.put(userId, returnValue);
+		UserRest returnValue = userService.createUser(userDetails);
 
 		return new ResponseEntity<UserRest>(returnValue, HttpStatus.OK);
 	}
 
-	
 	@PutMapping(path="/{userId}",
 			consumes =  { 
 			MediaType.APPLICATION_XML_VALUE,
@@ -101,7 +93,6 @@ public class UserController {
 		
 		return storedUserDetails;
 	}
-
 	
 	@DeleteMapping(path="/{userid}")
 	public ResponseEntity<Void> deleteUser(@PathVariable String userid){
