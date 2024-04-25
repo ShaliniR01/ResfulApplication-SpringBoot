@@ -85,6 +85,7 @@ public class UserController {
 					MediaType.APPLICATION_JSON_VALUE
 					}  )
 	public UserRest updateUser(@PathVariable String userId, @Valid @RequestBody UpdateUserDetailsRequestModel userDetails){
+		
 		UserRest storedUserDetails = users.get(userId);
 		storedUserDetails.setFirstName(userDetails.getFirstName());
 		storedUserDetails.setLastName(userDetails.getLastName());
@@ -96,7 +97,9 @@ public class UserController {
 	
 	@DeleteMapping(path="/{userid}")
 	public ResponseEntity<Void> deleteUser(@PathVariable String userid){
+		
 		users.remove(userid);
+		
 		return ResponseEntity.noContent().build();
 	}
 
