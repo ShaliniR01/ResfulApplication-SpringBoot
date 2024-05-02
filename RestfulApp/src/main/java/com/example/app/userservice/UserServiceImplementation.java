@@ -1,6 +1,5 @@
 package com.example.app.userservice;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -28,17 +27,14 @@ public class UserServiceImplementation implements UserService {
 	@Override
 	public UserRest createUser(UserDetailsRequestModel userDetails) {
 		
-		UserRest returnValue = new UserRest();
-		returnValue.setEmail(userDetails.getEmail());
-		returnValue.setFirstName(userDetails.getFirstName());
-		returnValue.setLastName(userDetails.getLastName());
+		UserRest userDetail = new UserRest();
+		userDetail.setEmail(userDetails.getEmail());
+		userDetail.setFirstName(userDetails.getFirstName());
+		userDetail.setLastName(userDetails.getLastName());
 		
 		String userId = UUID.randomUUID().toString();
-		returnValue.setUserId(userId);
+		userDetail.setUserId(userId);
 		
-		if(users==null) users = new HashMap<>();
-		users.put(userId, returnValue);
-		
-		return returnValue;
+		return userDetail;
 	}
 }

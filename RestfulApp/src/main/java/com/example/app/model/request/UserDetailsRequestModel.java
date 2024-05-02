@@ -1,11 +1,13 @@
 package com.example.app.model.request;
 
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 public class UserDetailsRequestModel {
-	@NotNull(message="first name cannot be null")
+	
+	@NotNull(message = "stringValue has to be present")
 	@Size(min=2, message="first name must not be less than two characters")
 	private String firstName;
 	

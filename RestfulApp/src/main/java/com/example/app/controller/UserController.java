@@ -1,11 +1,13 @@
 package com.example.app.controller;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -47,9 +49,9 @@ public class UserController {
 					MediaType.APPLICATION_JSON_VALUE
 					})
 	public ResponseEntity<UserRest> getUser(@PathVariable String userId){
-		if(true) {
+		/*if(true) {
 			throw new UserServiceException("A user service exception is thrown");
-		}
+		}*/
 		
 		if(users.containsKey(userId))
 		{
@@ -70,9 +72,12 @@ public class UserController {
 					}  )
 	public ResponseEntity<UserRest> createUser(@Valid @RequestBody UserDetailsRequestModel userDetails){
 		
-		UserRest returnValue = userService.createUser(userDetails);
+		UserRest returnUserDetail = userService.createUser(userDetails);
+		
+		if(users==null) users = new HashMap<>();
+		users.put(returnUserDetail.getUserId(), returnUserDetail);
 
-		return new ResponseEntity<UserRest>(returnValue, HttpStatus.OK);
+		return new ResponseEntity<UserRest>(returnUserDetail, HttpStatus.OK);
 	}
 
 	@PutMapping(path="/{userId}",
@@ -86,13 +91,13 @@ public class UserController {
 					}  )
 	public UserRest updateUser(@PathVariable String userId, @Valid @RequestBody UpdateUserDetailsRequestModel userDetails){
 		
-		UserRest storedUserDetails = users.get(userId);
-		storedUserDetails.setFirstName(userDetails.getFirstName());
-		storedUserDetails.setLastName(userDetails.getLastName());
+		UserRest updatedUserDetail = users.get(userId);
+		updatedUserDetail.setFirstName(userDetails.getFirstName());
+		updatedUserDetail.setLastName(userDetails.getLastName());
 		
-		users.put(userId, storedUserDetails);
+		users.put(userId, updatedUserDetail);
 		
-		return storedUserDetails;
+		return updatedUserDetail;
 	}
 	
 	@DeleteMapping(path="/{userid}")
